@@ -266,6 +266,7 @@ The options object contains following keys:
 * `headers`: headers object (key value pair), will be merged with global values
 * `filePath`: file path(s) to be used during upload and download see [uploadFile](#uploadFile) and [downloadFile](#downloadFile) for detailed information
 * `name`: name(s) to be used during upload see [uploadFile](#uploadFile) for detailed information
+* `transmitFileAs`: option for transmitting files in specific format. supports "BINARY", NULL, undefined or any string except "binary" for now. you can use http.sendRequest({ method: 'upload', filePath: '<path>', name: '<name>', transmitFileAs: 'BINARY', url: '<your url>' })
 
 Here's a quick example:
 

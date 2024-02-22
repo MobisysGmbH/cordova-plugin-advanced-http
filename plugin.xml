@@ -70,6 +70,7 @@
       <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     </config-file>
     <source-file src="src/android/com/silkimen/cordovahttp/CordovaClientAuth.java" target-dir="src/com/silkimen/cordovahttp"/>
+    <source-file src="src/android/com/silkimen/cordovahttp/CordovaClientCertCheck.java" target-dir="src/com/silkimen/cordovahttp"/>
     <source-file src="src/android/com/silkimen/cordovahttp/CordovaHttpBase.java" target-dir="src/com/silkimen/cordovahttp"/>
     <source-file src="src/android/com/silkimen/cordovahttp/CordovaHttpDownload.java" target-dir="src/com/silkimen/cordovahttp"/>
     <source-file src="src/android/com/silkimen/cordovahttp/CordovaHttpOperation.java" target-dir="src/com/silkimen/cordovahttp"/>

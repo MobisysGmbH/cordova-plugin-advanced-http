@@ -425,6 +425,16 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
+- (void)checkClientCertValidity:(CDVInvokedUrlCommand*)command {
+    CDVPluginResult* pluginResult;
+    NSString *alias = [command.arguments objectAtIndex:0];
+
+    // TODO
+
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"command 'checkClientCertValidity' is not supported on iOS"];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
 - (void)post:(CDVInvokedUrlCommand*)command {
     [self executeRequestWithData: command withMethod:@"POST"];
 }

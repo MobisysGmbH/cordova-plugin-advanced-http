@@ -33,6 +33,7 @@ module.exports = function init(exec, cookieHandler, urlUtil, helpers, globalConf
     uploadFile: uploadFile,
     downloadFile: downloadFile,
     abort: abort,
+    checkClientCertValidity: checkClientCertValidity,
     ErrorCode: errorCodes,
     ponyfills: ponyfills
   };
@@ -233,6 +234,16 @@ module.exports = function init(exec, cookieHandler, urlUtil, helpers, globalConf
 
   function abort(requestId , success, failure) {
     return exec(success, failure, 'CordovaHttpPlugin', 'abort', [requestId]);
+  }
+
+  function checkClientCertValidity(alias, succes, failure) {
+    return exec(
+      succes,
+      failure,
+      'CordovaHttpPlugin',
+      'checkClientCertValidity',
+      [alias],
+    );
   }
 
   return publicInterface;

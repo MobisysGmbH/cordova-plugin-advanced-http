@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-advanced-http",
-  "version": "3.3.1",
+  "version": "3.3.3",
   "description": "Cordova / Phonegap plugin for communicating with HTTP servers using SSL pinning",
   "scripts": {
     "update:cert": "node ./scripts/update-e2e-server-cert.js && node ./scripts/update-e2e-client-cert.js",
@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/silkimen/cordova-plugin-advanced-http.git"
+    "url": "git+https://github.com/MobisysGmbH/cordova-plugin-advanced-http.git"
   },
   "keywords": [
     "cordova",
@@ -54,9 +54,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/silkimen/cordova-plugin-advanced-http/issues"
+    "url": "https://github.com/MobisysGmbH/cordova-plugin-advanced-http.git"
   },
-  "homepage": "https://github.com/silkimen/cordova-plugin-advanced-http#readme",
+  "homepage": "https://github.com/MobisysGmbH/cordova-plugin-advanced-http.git",
   "devDependencies": {
     "chai": "4.3.6",
     "colors": "1.4.0",

@@ -332,6 +332,9 @@ var browserInterface = {
   },
   setClientAuthMode: function (success, failure, opts) {
     return failure('advanced-http: function "setClientAuthMode" not supported on browser platform');
+  },
+  checkClientCertValidity: function(alias, succes, failure) {
+    return failure('advanced-http: function "checkClientCertValidity" not supported on browser platform');
   }
 };
 

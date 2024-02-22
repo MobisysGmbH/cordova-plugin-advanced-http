@@ -4,7 +4,7 @@ resources:
       type: github
       name: MobisysGmbh/devops-templates
       endpoint: MobisysGmbH
-      ref: refs/heads/master
+      ref: refs/heads/release/v1
 
 extends:
   template: /yaml/kickstarter-templates/package-pipeline.yml@devops

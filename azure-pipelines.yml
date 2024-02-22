@@ -9,7 +9,7 @@ resources:
 extends:
   template: /yaml/kickstarter-templates/package-pipeline.yml@devops
   parameters:
-    targetFeed: mobisys
+    targetFeed: mobisys-internal
     packageType: npm
     testSteps: 
     - script: npm run test:js

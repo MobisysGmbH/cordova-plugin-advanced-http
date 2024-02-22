@@ -1,0 +1,20 @@
+resources:
+  repositories:
+    - repository: devops
+      type: github
+      name: MobisysGmbh/devops-templates
+      endpoint: MobisysGmbH
+      ref: refs/heads/release/v1
+
+trigger: none
+pr: none
+
+extends:
+  template: /yaml/kickstarter-templates/package-pipeline.yml@devops
+  parameters:
+    targetFeed: mobisys
+    packageType: npm
+    testSteps: 
+    - script: npm run test:js
+      displayName: Run unit tests
+      workingDirectory: $(applicationRootPath)

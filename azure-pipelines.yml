@@ -6,6 +6,9 @@ resources:
       endpoint: MobisysGmbH
       ref: refs/heads/release/v1
 
+trigger: none
+pr: none
+
 extends:
   template: /yaml/kickstarter-templates/package-pipeline.yml@devops
   parameters:

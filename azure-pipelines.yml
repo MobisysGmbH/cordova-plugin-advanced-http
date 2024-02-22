@@ -17,4 +17,3 @@ extends:
     testSteps: 
     - script: npm run test:js
       displayName: Run unit tests
-      workingDirectory: $(applicationRootPath)

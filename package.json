@@ -53,10 +53,7 @@
     "silkimen"
   ],
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/MobisysGmbH/cordova-plugin-advanced-http.git"
-  },
-  "homepage": "https://github.com/MobisysGmbH/cordova-plugin-advanced-http.git",
+  "homepage": "https://github.com/MobisysGmbH/cordova-plugin-advanced-http#readme",
   "devDependencies": {
     "chai": "4.3.6",
     "colors": "1.4.0",

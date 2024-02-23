@@ -112,15 +112,12 @@ public class CordovaHttpPlugin extends CordovaPlugin implements Observer {
     }
   }
 
-  private boolean checkClientCertValidity(final JSONArray args, final CallbackContext callbackContext){
-    try {
+  private boolean checkClientCertValidity(final JSONArray args, final CallbackContext callbackContext) throws JSONException {
     String alias = args.getString(0);
-      CordovaClientCertCheck runnable = new CordovaClientCertCheck(alias, this.cordova.getActivity(), callbackContext);
+    CordovaClientCertCheck runnable = new CordovaClientCertCheck(alias, this.cordova.getActivity(), callbackContext);
 
-      cordova.getThreadPool().execute(runnable);
-    } catch (JSONException e){
-      callbackContext.error(e.getMessage() +  "alias missing");
-    }
+    cordova.getThreadPool().execute(runnable);
+
     return true;
   }
 

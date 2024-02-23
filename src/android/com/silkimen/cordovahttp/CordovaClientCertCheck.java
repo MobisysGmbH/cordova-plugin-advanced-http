@@ -15,10 +15,15 @@ import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 
 public class CordovaClientCertCheck implements Runnable {
-    private String aliasString;
-    private Activity activity;
-    private CallbackContext callbackContext;
+    private final static String ISVALID = "isValid";
+    private final static String EXISTS = "exists";
+
+    private final String aliasString;
+    private final Activity activity;
+    private final CallbackContext callbackContext;
+
     public CordovaClientCertCheck(final String aliasString, final Activity activity, final CallbackContext callbackContext) {
+
         this.aliasString = aliasString;
         this.activity = activity;
         this.callbackContext = callbackContext;
@@ -34,9 +39,6 @@ public class CordovaClientCertCheck implements Runnable {
     }
 
     private void checkClientCertValidity() throws JSONException {
-        final String VALIDITY = "validity";
-        final String EXISTS = "exists";
-
         JSONObject result = new JSONObject();
         X509Certificate[] certChain;
 
@@ -45,9 +47,9 @@ public class CordovaClientCertCheck implements Runnable {
         } catch (KeyChainException | InterruptedException e){
             // prior to Android Q/10, if there is no certificate for given alias or no permission to
             // access the cert a KeyChainException with a Throwable of type IllegalStateException is thrown
-            Throwable throwable = e.getCause();
-            if(e instanceof KeyChainException && throwable != null && throwable instanceof IllegalStateException ) {
-                result.put(VALIDITY, false);
+            Throwable cause = e.getCause();
+            if (e instanceof KeyChainException && cause != null && cause instanceof IllegalStateException ) {
+                result.put(ISVALID, false);
                 result.put(EXISTS, false);
                 callbackContext.success(result);
                 return;
@@ -58,7 +60,7 @@ public class CordovaClientCertCheck implements Runnable {
         }
 
         if(certChain == null){
-            result.put(VALIDITY, false);
+            result.put(ISVALID, false);
             result.put(EXISTS, false);
             callbackContext.success(result);
             return;
@@ -68,7 +70,7 @@ public class CordovaClientCertCheck implements Runnable {
             try {
                 cert.checkValidity();
             } catch (CertificateExpiredException | CertificateNotYetValidException e ){
-                result.put(VALIDITY, false);
+                result.put(ISVALID, false);
                 result.put(EXISTS, true);
                 callbackContext.success(result);
                 return;
@@ -76,7 +78,7 @@ public class CordovaClientCertCheck implements Runnable {
         }
 
 
-        result.put(VALIDITY, true);
+        result.put(ISVALID, true);
         result.put(EXISTS, true);
         callbackContext.success(result);
     }

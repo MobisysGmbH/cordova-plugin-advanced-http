@@ -239,13 +239,17 @@ Configure X.509 client certificate authentication. Takes mode and options. `mode
 
 
 ### checkClientCertValidity<a name="checkClientCertValidity"></a>
-Check if a certificate(-chain) for given alias exists and is valid in terms of a time period. Returns a JSON Object with two boolean properties - exists and validity 
+Check if a certificate(-chain) for given alias exists and is valid at the current point in time. Returns a JSON Object with two boolean properties - exists and isValid.
+
+:warning: Supported only for Android.
 
 ```js
-  var certValidity = cordova.plugin.http.checkClientCertValidity(alias, success, fail)
+  success = (validityResult) => {
+    console.log(validityResult.exists);
+    console.log(validityResult.isValid);
+}
 
-  console.log(certValidity.exists)
-  console.log(certValidity.validity)
+  cordova.plugin.http.checkClientCertValidity(alias, success, fail)
 ```
 
 ### removeCookies

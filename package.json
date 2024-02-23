@@ -15,7 +15,7 @@
     "release": "npm run test && ./scripts/release.sh"
   },
   "cordova": {
-    "id": "cordova-plugin-advanced-http",
+    "id": "@mobisys-internal/cordova-plugin-advanced-http",
     "platforms": [
       "ios",
       "android"

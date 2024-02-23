@@ -237,6 +237,17 @@ Configure X.509 client certificate authentication. Takes mode and options. `mode
   cordova.plugin.http.setClientAuthMode('none', {}, success, fail);
 ```
 
+
+### checkClientCertValidity<a name="checkClientCertValidity"></a>
+Check if a certificate(-chain) for given alias exists and is valid in terms of a time period. Returns a JSON Object with two boolean properties - exists and validity 
+
+```js
+  var certValidity = cordova.plugin.http.checkClientCertValidity(alias, success, fail)
+
+  console.log(certValidity.exists)
+  console.log(certValidity.validity)
+```
+
 ### removeCookies
 Remove all cookies associated with a given URL.
 

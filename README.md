@@ -1,11 +1,6 @@
 Cordova Advanced HTTP
 =====================
-[![npm version](https://img.shields.io/npm/v/cordova-plugin-advanced-http)](https://www.npmjs.com/package/cordova-plugin-advanced-http?activeTab=versions)
 [![MIT Licence](https://img.shields.io/badge/license-MIT-blue?style=flat)](https://opensource.org/licenses/mit-license.php)
-[![downloads/month](https://img.shields.io/npm/dm/cordova-plugin-advanced-http.svg)](https://www.npmjs.com/package/cordova-plugin-advanced-http)
-
-[![Travis Build Status](https://img.shields.io/travis/com/silkimen/cordova-plugin-advanced-http/master?label=Travis%20CI)](https://app.travis-ci.com/silkimen/cordova-plugin-advanced-http)
-[![GitHub Build Status](https://img.shields.io/github/actions/workflow/status/silkimen/cordova-plugin-advanced-http/.github/workflows/ci.yml?branch=master)](https://github.com/silkimen/cordova-plugin-advanced-http/actions)
 
 
 Cordova / Phonegap plugin for communicating with HTTP servers.  Supports iOS, Android and [Browser](#browserSupport).
@@ -29,9 +24,9 @@ The plugin conforms to the Cordova plugin specification, it can be installed
 using the Cordova / Phonegap command line interface.
 
 ```shell
-phonegap plugin add cordova-plugin-advanced-http
+phonegap plugin add @mobisys-internal/cordova-plugin-advanced-http
 
-cordova plugin add cordova-plugin-advanced-http
+cordova plugin add @mobisys-internal/cordova-plugin-advanced-http
 ```
 
 ### Plugin Preferences
@@ -235,6 +230,21 @@ Configure X.509 client certificate authentication. Takes mode and options. `mode
 
   // disable client auth
   cordova.plugin.http.setClientAuthMode('none', {}, success, fail);
+```
+
+
+### checkClientCertValidity<a name="checkClientCertValidity"></a>
+Check if a certificate chain for a given alias exists and is valid at the current point in time. Returns a JSON Object with two boolean properties: `exists` and `isValid`.
+
+:warning: Supported only for Android.
+
+```js
+const success = (validityResult) => {
+  console.log(validityResult.exists);
+  console.log(validityResult.isValid);
+};
+
+cordova.plugin.http.checkClientCertValidity(alias, success, fail);
 ```
 
 ### removeCookies

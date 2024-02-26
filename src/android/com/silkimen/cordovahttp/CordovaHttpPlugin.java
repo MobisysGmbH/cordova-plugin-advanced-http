@@ -53,7 +53,7 @@ public class CordovaHttpPlugin extends CordovaPlugin implements Observer {
 
       if (this.preferences.contains("androidblacklistsecuresocketprotocols")) {
         this.tlsConfiguration.setBlacklistedProtocols(
-          this.preferences.getString("androidblacklistsecuresocketprotocols", "").split(",")
+                this.preferences.getString("androidblacklistsecuresocketprotocols", "").split(",")
         );
       }
 
@@ -64,7 +64,7 @@ public class CordovaHttpPlugin extends CordovaPlugin implements Observer {
 
   @Override
   public boolean execute(String action, final JSONArray args, final CallbackContext callbackContext)
-      throws JSONException {
+          throws JSONException {
 
     if (action == null) {
       return false;
@@ -74,6 +74,8 @@ public class CordovaHttpPlugin extends CordovaPlugin implements Observer {
       return this.setServerTrustMode(args, callbackContext);
     } else if ("setClientAuthMode".equals(action)) {
       return this.setClientAuthMode(args, callbackContext);
+    } else if("checkClientCertValidity".equals(action)) {
+      return this.checkClientCertValidity(args, callbackContext);
     } else if ("abort".equals(action)) {
       return this.abort(args, callbackContext);
     }
@@ -109,6 +111,16 @@ public class CordovaHttpPlugin extends CordovaPlugin implements Observer {
       return false;
     }
   }
+
+  private boolean checkClientCertValidity(final JSONArray args, final CallbackContext callbackContext) throws JSONException {
+    String alias = args.getString(0);
+    CordovaClientCertCheck runnable = new CordovaClientCertCheck(alias, this.cordova.getActivity(), callbackContext);
+
+    cordova.getThreadPool().execute(runnable);
+
+    return true;
+  }
+
 
   private boolean executeHttpRequestWithoutData(final String method, final JSONArray args,
       final CallbackContext callbackContext) throws JSONException {

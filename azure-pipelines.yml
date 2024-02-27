@@ -6,11 +6,14 @@ resources:
       endpoint: MobisysGmbH
       ref: refs/heads/release/v6
 
+trigger: none
+pr: none
+
 extends:
   template: /yaml/kickstarter-templates/package-pipeline.yml@devops
   parameters:
     targetFeed: mobisys-internal
     packageType: npm
-    testSteps: 
+    testSteps:
     - script: npm run test:js
       displayName: Run unit tests

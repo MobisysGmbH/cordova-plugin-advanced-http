@@ -12,9 +12,9 @@ pr: none
 extends:
   template: /yaml/kickstarter-templates/package-pipeline.yml@devops
   parameters:
-    targetFeed: mobisys-internal
     packageType: npm
+    requireNvmrc: true
     allowedPublishingBranches: refs/heads/master
     testSteps:
-    - script: npm run test:js
-      displayName: Run unit tests
+      - script: npm run test:js
+        displayName: Run unit tests

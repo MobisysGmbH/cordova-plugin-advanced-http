@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android" id="cordova-plugin-advanced-http" version="3.3.3">
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
+  xmlns:android="http://schemas.android.com/apk/res/android" id="@mobisys-internal/cordova-plugin-advanced-http" version="3.3.3">
   <name>Advanced HTTP plugin</name>
   <description>
         Cordova / Phonegap plugin for communicating with HTTP servers using SSL pinning
-	 </description>
+  </description>
   <engines>
     <engine name="cordova" version=">=4.0.0"/>
   </engines>

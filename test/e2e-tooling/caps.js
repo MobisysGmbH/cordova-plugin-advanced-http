@@ -83,7 +83,7 @@ function getCaps(environment, os, runtime) {
   const key = environment.toLowerCase() + capitalize(os) + capitalize(runtime);
   const caps = configs[key];
 
-  caps.name = `cordova-plugin-advanced-http (${os})`;
+  caps.name = `@mobisys-internal/cordova-plugin-advanced-http (${os})`;
 
   return caps;
 };

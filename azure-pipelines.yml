@@ -4,7 +4,7 @@ resources:
       type: github
       name: MobisysGmbh/devops-templates
       endpoint: MobisysGmbH
-      ref: refs/heads/release/v7
+      ref: refs/heads/release/v8
 
 trigger: none
 pr: none
@@ -18,3 +18,10 @@ extends:
     testSteps:
       - script: npm run test:js
         displayName: Run unit tests
+    prePublishSteps:
+      - task: CopyFiles@2
+        inputs:
+          Contents: 'mobisys-internal-cordova-plugin-advanced-http-*.tgz'
+          TargetFolder: 'publish'
+          CleanTargetFolder: true
+    artifactsDirectoryToPublish: $(Build.SourcesDirectory)/publish

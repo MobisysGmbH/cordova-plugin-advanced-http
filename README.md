@@ -213,7 +213,7 @@ cordova.plugin.http.setServerTrustMode('nocheck', function() {
 Configure X.509 client certificate authentication. Takes mode and options. `mode` being one of following values:
 
 * `none`: disable client certificate authentication
-* `systemstore` (only on Android): use client certificate installed in the Android system store; user will be presented with a list of all installed certificates
+* `systemstore`: use client certificate installed in the system store. On Android, this allows selection from the system certificate store. On iOS, this mode allows reading client certificates from the app's own keychain (not the global system store).
 * `buffer`: use given client certificate; you will need to provide an options object:
   * `rawPkcs`: ArrayBuffer containing raw PKCS12 container with client certificate and private key
   * `pkcsPassword`: password of the PKCS container
@@ -225,7 +225,10 @@ Configure X.509 client certificate authentication. Takes mode and options. `mode
     pkcsPassword: 'mySecretPassword'
   }, success, fail);
 
-  // enable client auth using certificate in system store (only on Android)
+  // enable client auth using certificate in system store
+  // On Android, this allows selection from the system store
+  // On iOS, this reads from the app's keychain (app-specific store, not the global system store)
+  // iOS apps do not have access to the global system certificate store.
   cordova.plugin.http.setClientAuthMode('systemstore', {}, success, fail);
 
   // disable client auth

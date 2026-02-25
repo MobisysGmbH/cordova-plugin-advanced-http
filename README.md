@@ -237,7 +237,7 @@ Configure X.509 client certificate authentication. Takes mode and options. `mode
 
 
 ### checkClientCertValidity<a name="checkClientCertValidity"></a>
-Check if a certificate chain for a given alias exists and is valid at the current point in time. Returns a JSON Object with two boolean properties: `exists` and `isValid`.
+Check if a certificate chain for a given alias exists and is valid at the current point in time. On iOS, the validity period is checked only for iOS >= 18; for lower versions, it always returns valid if the certificate exists. Returns a JSON Object with two boolean properties: `exists` and `isValid`.
 
 :warning: Supported only for Android.
 

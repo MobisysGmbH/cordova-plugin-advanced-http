@@ -387,12 +387,16 @@
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Identity not found for alias"];
         } else {
             SecCertificateRef certificate = [self copyCertificateForIdentity:identity];
-            NSArray *chain = [self certificateChainForCertificate:certificate];
-            self->x509Credential = [NSURLCredential credentialWithIdentity:identity certificates:chain persistence:NSURLCredentialPersistenceForSession];
-            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:alias ? alias : nil];
-            
-            if (certificate) CFRelease(certificate);
-            CFRelease(identity);
+            if (!certificate) {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Certificate not found for identity"];
+                CFRelease(identity);
+            } else {
+                NSArray *chain = [self certificateChainForCertificate:certificate];
+                self->x509Credential = [NSURLCredential credentialWithIdentity:identity certificates:chain persistence:NSURLCredentialPersistenceForSession];
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:alias];
+                CFRelease(certificate);
+                CFRelease(identity);
+            }
         }
     }
 
@@ -528,7 +532,6 @@
 }
 
 - (NSArray *)certificateChainForCertificate:(SecCertificateRef)certificate {
-    if (!certificate) return @[];
 
     NSMutableArray *chain = [NSMutableArray array];
     [chain addObject:(__bridge id)certificate];
@@ -537,8 +540,7 @@
     SecTrustRef trust = NULL;
 
     if (SecTrustCreateWithCertificates(certs, policy, &trust) == errSecSuccess && trust) {
-        SecTrustResultType trustResult;
-        SecTrustEvaluate(trust, &trustResult);
+        SecTrustEvaluateWithError(trust, NULL);
         CFIndex certCount = SecTrustGetCertificateCount(trust);
 
         for (CFIndex i = 1; i < certCount; i++) {

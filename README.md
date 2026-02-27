@@ -229,7 +229,7 @@ Configure X.509 client certificate authentication. Takes mode and options. `mode
   // On Android, this allows selection from the system store
   // On iOS, this reads from the app's keychain (app-specific store, not the global system store)
   // iOS apps do not have access to the global system certificate store.
-  cordova.plugin.http.setClientAuthMode('systemstore', {}, success, fail);
+  cordova.plugin.http.setClientAuthMode('systemstore', { alias: 'myCertAlias' }, success, fail);
 
   // disable client auth
   cordova.plugin.http.setClientAuthMode('none', {}, success, fail);

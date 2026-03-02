@@ -400,7 +400,7 @@
         }
     }
 
-if ([mode isEqualToString:@"buffer"]) {
+    if ([mode isEqualToString:@"buffer"]) {
         CFDataRef container = (__bridge CFDataRef) [command.arguments objectAtIndex:2];
         CFStringRef password = (__bridge CFStringRef) [command.arguments objectAtIndex:3];
 

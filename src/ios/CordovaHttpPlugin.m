@@ -400,7 +400,7 @@
         }
     }
 
-    if ([mode isEqualToString:@"buffer"]) {
+if ([mode isEqualToString:@"buffer"]) {
         CFDataRef container = (__bridge CFDataRef) [command.arguments objectAtIndex:2];
         CFStringRef password = (__bridge CFStringRef) [command.arguments objectAtIndex:3];
 
@@ -419,28 +419,19 @@
             SecIdentityRef identity = (SecIdentityRef)CFDictionaryGetValue(identityDict, kSecImportItemIdentity);
             SecTrustRef trust = (SecTrustRef)CFDictionaryGetValue(identityDict, kSecImportItemTrust);
 
-            // Build the full available chain (excluding root)
             int count = (int)SecTrustGetCertificateCount(trust);
-            NSMutableArray* chain = [NSMutableArray array];
-            if (count > 0) {
-                // Add all except the root (last one)
-                for (int i = 0; i < count - 1; ++i) {
-                    SecCertificateRef cert = SecTrustGetCertificateAtIndex(trust, i);
-                    if (cert) {
-                        [chain addObject:(__bridge id)cert];
-                    }
-                }
-                // If only one cert, just add it
-                if (count == 1) {
-                    SecCertificateRef cert = SecTrustGetCertificateAtIndex(trust, 0);
-                    if (cert) {
-                        [chain addObject:(__bridge id)cert];
-                    }
+            NSMutableArray* trustCertificates = nil;
+            if (count > 1) {
+                trustCertificates = [NSMutableArray arrayWithCapacity:SecTrustGetCertificateCount(trust)];
+                for (int i=1;i<count; ++i) {
+                    [trustCertificates addObject:(id)SecTrustGetCertificateAtIndex(trust, i)];
                 }
             }
-            self->x509Credential = [NSURLCredential credentialWithIdentity:identity certificates:chain persistence:NSURLCredentialPersistenceForSession];
+
+            self->x509Credential = [NSURLCredential credentialWithIdentity:identity certificates: trustCertificates persistence:NSURLCredentialPersistenceForSession];
             CFRelease(items);
-            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:nil];
+
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         }
     }
 

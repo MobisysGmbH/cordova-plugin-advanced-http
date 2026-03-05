@@ -531,7 +531,6 @@
     SecTrustRef trust = NULL;
 
     if (SecTrustCreateWithCertificates(certs, policy, &trust) == errSecSuccess && trust) {
-        SecTrustEvaluateWithError(trust, NULL);
         CFIndex certCount = SecTrustGetCertificateCount(trust);
 
         for (CFIndex i = 1; i < certCount; i++) {

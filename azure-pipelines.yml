@@ -13,7 +13,7 @@ extends:
   template: /yaml/kickstarter-templates/package-pipeline.yml@devops
   parameters:
     packageType: npm
-    requireNvmrc: true
+    requireNvmrc: false
     allowedPublishingBranches: refs/heads/master
     testSteps:
       - script: npm run test:js

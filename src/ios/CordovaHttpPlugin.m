@@ -380,11 +380,24 @@
     }
 
     if ([mode isEqualToString:@"systemstore"]) {
-      NSString *alias = [command.arguments objectAtIndex:1];
+        NSString *alias = command.arguments[1];
+        SecIdentityRef identity = [self copyIdentityForAlias:alias];
 
-      // TODO
-
-      pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"mode 'systemstore' is not supported on iOS"];
+        if (!identity) {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Identity not found for alias"];
+        } else {
+            SecCertificateRef certificate = [self copyCertificateForIdentity:identity];
+            if (!certificate) {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Certificate not found for identity"];
+                CFRelease(identity);
+            } else {
+                NSArray *chain = [self certificateChainForCertificate:certificate];
+                self->x509Credential = [NSURLCredential credentialWithIdentity:identity certificates:chain persistence:NSURLCredentialPersistenceForSession];
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:alias];
+                CFRelease(certificate);
+                CFRelease(identity);
+            }
+        }
     }
 
     if ([mode isEqualToString:@"buffer"]) {
@@ -429,10 +442,111 @@
     CDVPluginResult* pluginResult;
     NSString *alias = [command.arguments objectAtIndex:0];
 
-    // TODO
+    if (![alias isKindOfClass:[NSString class]] || alias.length == 0) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"No alias provided"];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        return;
+    }
 
-    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"command 'checkClientCertValidity' is not supported on iOS"];
+    NSMutableDictionary *resultDict = [NSMutableDictionary dictionary];
+    SecIdentityRef identity = [self copyIdentityForAlias:alias];
+
+    if (identity) {
+        SecCertificateRef certificate = [self copyCertificateForIdentity:identity];
+
+        if (certificate) {
+            BOOL valid = YES;
+            if (@available(iOS 18.0, *)) {
+                NSDate *notBefore = (__bridge_transfer NSDate *)SecCertificateCopyNotValidBeforeDate(certificate);
+                NSDate *notAfter  = (__bridge_transfer NSDate *)SecCertificateCopyNotValidAfterDate(certificate);
+                if (notBefore && notAfter) {
+                    NSDate *now = [NSDate date];
+                    valid = ([now compare:notBefore] != NSOrderedAscending) && ([now compare:notAfter] != NSOrderedDescending);
+                } else {
+                    valid = NO;
+                }
+            }
+            // For iOS < 18, skip validity check and always return true if cert exists
+            [resultDict setObject:@(valid) forKey:@"isValid"];
+            [resultDict setObject:@YES forKey:@"exists"];
+
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:resultDict];
+            CFRelease(certificate);
+        } else {
+            [resultDict setObject:@NO forKey:@"isValid"];
+            [resultDict setObject:@NO forKey:@"exists"];
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:resultDict];
+        }
+        CFRelease(identity);
+    } else {
+        [resultDict setObject:@NO forKey:@"isValid"];
+        [resultDict setObject:@NO forKey:@"exists"];
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:resultDict];
+    }
+
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (SecIdentityRef)copyIdentityForAlias:(NSString *)alias {
+    if (![alias isKindOfClass:[NSString class]] || alias.length == 0) return NULL;
+
+    NSDictionary *query = @{
+        (__bridge id)kSecClass: (__bridge id)kSecClassIdentity,
+        (__bridge id)kSecAttrLabel: alias,
+        (__bridge id)kSecReturnRef: @YES,
+        (__bridge id)kSecMatchLimit: (__bridge id)kSecMatchLimitOne
+    };
+
+    CFTypeRef result = NULL;
+    OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)query, &result);
+
+    if (status == errSecSuccess && result != NULL && CFGetTypeID(result) == SecIdentityGetTypeID()) {
+        return (SecIdentityRef)result;
+    }
+
+    if (result) CFRelease(result);
+    
+    return NULL;
+}
+
+- (SecCertificateRef)copyCertificateForIdentity:(SecIdentityRef)identity {
+    if (!identity) return NULL;
+
+    SecCertificateRef certificate = NULL;
+    OSStatus certStatus = SecIdentityCopyCertificate(identity, &certificate);
+
+    if (certStatus == errSecSuccess && certificate != NULL) {
+        return certificate;
+    }
+
+    return NULL;
+}
+
+- (NSArray *)certificateChainForCertificate:(SecCertificateRef)certificate {
+
+    NSMutableArray *chain = [NSMutableArray array];
+    [chain addObject:(__bridge id)certificate];
+    SecPolicyRef policy = SecPolicyCreateSSL(NO, NULL);
+    CFArrayRef certs = CFArrayCreate(NULL, (const void **)&certificate, 1, &kCFTypeArrayCallBacks);
+    SecTrustRef trust = NULL;
+
+    if (SecTrustCreateWithCertificates(certs, policy, &trust) == errSecSuccess && trust) {
+        CFIndex certCount = SecTrustGetCertificateCount(trust);
+
+        for (CFIndex i = 1; i < certCount; i++) {
+            SecCertificateRef intermediate = SecTrustGetCertificateAtIndex(trust, i);
+
+            if (intermediate) {
+                [chain addObject:(__bridge id)intermediate];
+            }
+        }
+
+        CFRelease(trust);
+    }
+
+    CFRelease(policy);
+    CFRelease(certs);
+    return chain;
 }
 
 - (void)post:(CDVInvokedUrlCommand*)command {

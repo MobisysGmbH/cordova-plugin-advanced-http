@@ -283,8 +283,18 @@ public class CordovaHttpPlugin extends CordovaPlugin implements Observer {
 
   private boolean isNetworkAvailable() {
     ConnectivityManager connectivityManager = (ConnectivityManager) cordova.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      Network network = connectivityManager.getActiveNetwork();
+      if (network == null) return false;
+
+      NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(network);
+      if (capabilities == null) return false;
+
+      return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
+    } 
+
+    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
     return activeNetworkInfo != null && activeNetworkInfo.isConnected();
   }
 }

@@ -294,9 +294,9 @@ public class CordovaHttpPlugin extends CordovaPlugin implements Observer {
       NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(network);
       if (capabilities == null) return false;
 
-      return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
-    } 
-
+      return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+    }
+    
     NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
     return activeNetworkInfo != null && activeNetworkInfo.isConnected();
   }

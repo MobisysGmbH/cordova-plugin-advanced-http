@@ -18,9 +18,12 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
-import android.util.Log;
+import android.os.Build;
 import android.util.Base64;
+import android.util.Log;
 
 import javax.net.ssl.TrustManagerFactory;
 

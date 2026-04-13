@@ -18,9 +18,12 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
-import android.util.Log;
+import android.os.Build;
 import android.util.Base64;
+import android.util.Log;
 
 import javax.net.ssl.TrustManagerFactory;
 
@@ -283,8 +286,18 @@ public class CordovaHttpPlugin extends CordovaPlugin implements Observer {
 
   private boolean isNetworkAvailable() {
     ConnectivityManager connectivityManager = (ConnectivityManager) cordova.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      Network network = connectivityManager.getActiveNetwork();
+      if (network == null) return false;
+
+      NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(network);
+      if (capabilities == null) return false;
+
+      return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+    }
+    
+    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
     return activeNetworkInfo != null && activeNetworkInfo.isConnected();
   }
 }

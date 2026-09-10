@@ -1,5 +1,8 @@
 # Changelog
 
+# 3.5.2
+- Fixed: iOS 26+ and cordova-ios-8 changes
+
 # 3.3.1
 
 - Fixed #427: missing connection check on Android (thanks moshe5745)
